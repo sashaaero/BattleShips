@@ -72,8 +72,13 @@ public class Cell extends JComponent{
     }
 
     private void operate(){
-        if (player)
+        if (Game.state == Game.GAME_FINISHED){
             return;
+        }
+
+        if (Game.state == Game.GAME_IN_PROCESS && player){
+            return;
+        }
 
         if (visualStatus == UNKNOWN){
             if(gameStatus == EMPTY){

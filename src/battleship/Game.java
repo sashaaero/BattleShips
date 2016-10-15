@@ -4,26 +4,31 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Game {
-    static int FIELD_SIZE = 10;
-    static int CELL_SIZE = 30;
-    static String PUT_SHIPS = "Расставьте корабли, и нажмите \"Начать\" для начала игры";
+    static final int FIELD_SIZE = 10;
+    static final int CELL_SIZE = 30;
+    private final String PUT_SHIPS = "Расставьте корабли, и нажмите \"Начать\" для начала игры";
+    static int GAME_NOT_STARTED = 0;
+    static int GAME_IN_PROCESS = 1;
+    static int GAME_FINISHED = 2;
 
+    static int state;
 
-    JFrame window;
-    Field playerField;
-    Field enemyField;
-    JPanel fieldsPanel;
-    JPanel lowerPanel;
-    JButton newGame;
-    JButton surrender;
-    JButton start;
-    JLabel turnLabel;
+    private JFrame window;
+    private Field playerField;
+    private Field enemyField;
+    private JPanel fieldsPanel;
+    private JPanel lowerPanel;
+    private JButton newGame;
+    private JButton surrender;
+    private JButton start;
+    private JLabel infoLabel;
 
-    public Game(){
+    private Game(){
         initGUI();
 
         this.window.setVisible(true);
     }
+
 
     private void initGUI(){
         window = new JFrame();
@@ -35,9 +40,9 @@ public class Game {
         window.getContentPane().setBackground(Color.white);
         window.setTitle("Морской Бой - Даниил Евсеев");
 
-        turnLabel = new JLabel(PUT_SHIPS);
-        turnLabel.setHorizontalAlignment(JLabel.CENTER);
-        turnLabel.setPreferredSize(new Dimension(window.getWidth(), 90));
+        infoLabel = new JLabel(PUT_SHIPS);
+        infoLabel.setHorizontalAlignment(JLabel.CENTER);
+        infoLabel.setPreferredSize(new Dimension(window.getWidth(), 90));
 
         newGame = new JButton("Новая игра");
         surrender = new JButton("Сдаться");
@@ -76,22 +81,29 @@ public class Game {
         c.gridx = 2;
         fieldsPanel.add(enemyField, c);
 
-        window.add(turnLabel, BorderLayout.NORTH);
+        window.add(infoLabel, BorderLayout.NORTH);
         window.add(fieldsPanel, BorderLayout.CENTER);
         window.add(lowerPanel, BorderLayout.SOUTH);
     }
 
     private void newGame(){
-        //TODO
+
     }
 
     private void start(){
-        //TODO
+        /*
+            Проверяем на валидность расстановки
+            Запускаем игру
+         */
     }
 
     private void surrender(){
         //TODO
     }
+
+    //private boolean isFieldValid(){
+
+    //}
 
     public static void main(String[] args) {
         new Game();
