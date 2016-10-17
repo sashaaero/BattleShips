@@ -34,6 +34,7 @@ public class Game {
     private Game(){
         initGUI();
         state = GAME_NOT_STARTED;
+        playerTurn = true;
         this.window.setVisible(true);
     }
 
