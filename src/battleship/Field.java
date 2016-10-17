@@ -5,8 +5,10 @@ import java.awt.*;
 
 class Field extends JPanel{
     private Cell[][] field = new Cell[Game.FIELD_SIZE][Game.FIELD_SIZE];
+    private Army army;
 
     Field(boolean player){
+        // GUI PART
         JPanel cells = new JPanel(new GridLayout(Game.FIELD_SIZE + 1, Game.FIELD_SIZE + 1));
         this.setLayout(new BorderLayout());
         this.setBackground(Color.white);
@@ -37,9 +39,32 @@ class Field extends JPanel{
         JLabel label = new JLabel(player ? "Вы" : "Компьютер");
         label.setHorizontalAlignment(JLabel.CENTER);
         this.add(label, BorderLayout.NORTH);
+
+        // Game part
+        army = new Army();
     }
 
-    public Cell get(int x, int y){
-        return field[x-1][y-1];
+    boolean fieldIsReady(){
+        // Быстрая проверка
+        int counter = 0;
+        for(int i = 0; i < Game.FIELD_SIZE; i++){
+            for(int j = 0; j < Game.FIELD_SIZE; j++){
+                counter += field[i][j].ship ? 1 : 0;
+            }
+        }
+        if (counter != Army.POINTS_COUNTER) {
+            return false; //недостаточно клеток (или перебор)
+        } else { //Начинаем проверку
+            for(int i = 0; i < Game.FIELD_SIZE; i++){
+                for(int j = 0; j < Game.FIELD_SIZE; j++){
+                    if (field[i][j].ship) {
+                        if (Ship.isValidShip(i, j)){
+                            army.addShip(new Ship(i, j));
+                        }
+                    }
+                }
+            }
+        }
+        return false; //TODO
     }
 }

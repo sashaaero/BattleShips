@@ -4,18 +4,26 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Game {
+    // Константы
     static final int FIELD_SIZE = 10;
     static final int CELL_SIZE = 30;
-    private final String PUT_SHIPS = "Расставьте корабли, и нажмите \"Начать\" для начала игры";
-    static int GAME_NOT_STARTED = 0;
-    static int GAME_IN_PROCESS = 1;
-    static int GAME_FINISHED = 2;
+    private String PUT_SHIPS = "Расставьте корабли, и нажмите \"Начать\" для начала игры";
+    private String WRONG_SHIPS = "Ваши корабли выставлены неверно";
+    private String YOUR_TURN = "Ваш ход";
+    private String ENEMY_TURN = "Ходит противник";
+    static final int GAME_NOT_STARTED = 0;
+    static final int GAME_IN_PROCESS = 1;
+    static final int GAME_FINISHED = 2;
 
+    // Поля игры
     static int state;
+    static boolean playerTurn;
 
+
+    // Поля интернфейса
     private JFrame window;
-    private Field playerField;
-    private Field enemyField;
+    public static Field playerField;
+    public static Field enemyField;
     private JPanel fieldsPanel;
     private JPanel lowerPanel;
     private JButton newGame;
@@ -25,7 +33,7 @@ public class Game {
 
     private Game(){
         initGUI();
-
+        state = GAME_NOT_STARTED;
         this.window.setVisible(true);
     }
 
@@ -87,14 +95,14 @@ public class Game {
     }
 
     private void newGame(){
-
     }
 
     private void start(){
-        /*
-            Проверяем на валидность расстановки
-            Запускаем игру
-         */
+        if(playerField.fieldIsReady()){
+            infoLabel.setText("Ваш выстрел");
+        } else {
+            infoLabel.setText("Ваши корабли выставлены неверно");
+        }
     }
 
     private void surrender(){
