@@ -31,7 +31,7 @@ public class Game {
     private JButton start;
     private JLabel infoLabel;
 
-    private Game(){
+    Game(){
         initGUI();
         state = GAME_NOT_STARTED;
         playerTurn = true;
@@ -102,6 +102,7 @@ public class Game {
     private void start(){
         if(playerField.fieldIsReady()){
             infoLabel.setText("Ваш выстрел");
+
         } else {
             infoLabel.setText("Ваши корабли выставлены неверно");
         }
@@ -114,8 +115,4 @@ public class Game {
     //private boolean isFieldValid(){
 
     //}
-
-    public static void main(String[] args) {
-        new Game();
-    }
 }

@@ -5,7 +5,7 @@ import java.awt.*;
 
 class Field extends JPanel{
     private Cell[][] field = new Cell[Game.FIELD_SIZE][Game.FIELD_SIZE];
-    private Army army;
+    Army army;
 
     Field(boolean player){
         // GUI PART
@@ -59,7 +59,7 @@ class Field extends JPanel{
             for(int i = 0; i < Game.FIELD_SIZE; i++){
                 for(int j = 0; j < Game.FIELD_SIZE; j++){
                     if (isShipHere(i, j)) {
-                        if (army.alreadySeen(i, j))
+                        if (army.engaged(i, j))
                             continue;
 
                         Ship curr = new Ship(this, i, j);
@@ -74,7 +74,7 @@ class Field extends JPanel{
                 }
             }
         }
-        return false; //TODO
+        return true; //TODO
     }
 
     boolean isShipHere(int x, int y){
@@ -82,6 +82,9 @@ class Field extends JPanel{
     }
 
     Cell get(int x, int y){
-        return field[x][y];
+        if (y >= 0 && y < Game.FIELD_SIZE && x >= 0 && x < Game.FIELD_SIZE)
+            return field[x][y];
+        else
+            return null;
     }
 }

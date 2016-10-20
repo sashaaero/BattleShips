@@ -13,7 +13,7 @@ class Ship{
     private static final boolean HORIZONTAL = false;
     private static final boolean VERTICAL = true;
 
-    boolean valid;
+    boolean valid = true;
 
     Ship(Field field, int x, int y){
         // Проверяем, действительно ли тут есть что-то
@@ -27,25 +27,46 @@ class Ship{
         int begin, end;
         if (way == HORIZONTAL){
             begin = end = y;
-            while (field.isShipHere(x, begin - 1))
+            while (field.isShipHere(x, begin - 1)) // Находим начало корабля
                 begin--;
 
-            while (field.isShipHere(x, end + 1))
+            while (field.isShipHere(x, end + 1)) // Конец
                 end++;
 
+            // Проверка на длину
             length = end - begin + 1;
-            if(!(length >= 1 && length <= 4)){
-                valid = false;
-                return;
-            }
-            valid = true;
-            for(int i = begin; i < end + 1; i++){
-                coordinates.add(new Point(x, i));
-                field.get(x, i).background = Color.lightGray; //DEV COLORING
-                field.get(x, i).repaint();
+            if(!(length >= 1 && length <= 4)){ // Если корабль неверной длины
+                valid = false; // Помечаем ошибку
+                return; // Выходим
             }
 
-            // TODO CHECK AROUND
+            // Проверка окружения
+            // begin & end
+            for (int i = x - 1; i <= x + 1; i++) { // Если пусто там где должно быть
+                if (!field.isShipHere(i, begin - 1) && !field.isShipHere(i, end + 1)) {
+                    operateEmpty(field, i, begin - 1); // Добавляем в список окружения
+                    operateEmpty(field, i, end + 1);
+                } else {
+                    valid = false;
+                    return;
+                }
+            }
+            // Все на протяжении корабля
+            for (int i = begin; i <= end; i++){
+                if (!field.isShipHere(x - 1, i) && !field.isShipHere(x + 1, i)){
+                    operateEmpty(field, x - 1, i);
+                    operateEmpty(field, x + 1, i);
+                } else {
+                    valid = false;
+                    return;
+                }
+            }
+
+            // Запись самого корабля
+            for(int i = begin; i < end + 1; i++){
+                coordinates.add(new Point(x, i));
+                repaintCell(field.get(x, i), Color.lightGray);
+            }
         }
         if (way == VERTICAL){
             begin = end = x;
@@ -61,20 +82,50 @@ class Ship{
                 return;
             }
 
-            valid = true;
-            for(int i = begin; i < end + 1; i++){
-                coordinates.add(new Point(i, y));
-                field.get(i, y).background = Color.lightGray; //DEV COLORING
-                field.get(i, y).repaint();
+            // Проверка окружения
+            // begin & end
+            for (int i = y - 1; i <= y + 1; i++) { // Если пусто там где должно быть
+                if (!field.isShipHere(begin - 1, i) && !field.isShipHere(end + 1, i)) {
+                    operateEmpty(field, begin - 1, i); // Добавляем в список окружения
+                    operateEmpty(field, end + 1, i);
+                } else {
+                    valid = false;
+                    return;
+                }
+            }
+            // Все на протяжении корабля
+            for (int i = begin; i <= end; i++){
+                if (!field.isShipHere(i, y - 1) && !field.isShipHere(i, y + 1)){
+                    operateEmpty(field, i, y - 1);
+                    operateEmpty(field, i, y + 1);
+                } else {
+                    valid = false;
+                    return;
+                }
             }
 
-            // TODO CHECK AROUND
+            for(int i = begin; i < end + 1; i++){
+                coordinates.add(new Point(i, y));
+                repaintCell(field.get(i, y), Color.lightGray);
+            }
         }
+    }
+
+    private void operateEmpty(Field field, int x, int y){
+        Cell cell = field.get(x, y);
+        if (cell != null){
+            around.add(new Point(x, y));
+            repaintCell(field.get(x, y), Color.PINK);
+        }
+    }
+
+    private void repaintCell(Cell cell, Color color){
+        cell.background = color;
+        cell.repaint();
     }
 
     // DEVMETHOD
     public void callSelf(){
-
         Point begin = coordinates.get(0), end = coordinates.get(coordinates.size() - 1);
         System.out.printf("Найден корабль длиной %d\n", length);
         String letters[] = {"а", "б", "в", "г", "д", "е", "ж", "з", "и", "к"};

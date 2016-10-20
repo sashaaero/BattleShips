@@ -24,14 +24,18 @@ class Army {
         ships.clear();
     }
 
-    boolean alreadySeen(int x, int y){
-        for(Ship ship: ships){
+    boolean engaged(int x, int y){
+        for (Ship ship: ships){
             for (Point point: ship.coordinates){
-                if (point.x == x && point.y == y){
+                if (point.x == x && point.y == y)
                     return true;
-                }
+            }
+            for (Point point: ship.around){
+                if (point.x == x && point.y == y)
+                    return true;
             }
         }
         return false;
     }
+
 }
