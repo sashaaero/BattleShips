@@ -52,19 +52,36 @@ class Field extends JPanel{
                 counter += field[i][j].ship ? 1 : 0;
             }
         }
-        if (counter != Army.POINTS_COUNTER) {
+        if (counter != Army.POINTS_AMOUNT) {
             return false; //недостаточно клеток (или перебор)
+
         } else { //Начинаем проверку
             for(int i = 0; i < Game.FIELD_SIZE; i++){
                 for(int j = 0; j < Game.FIELD_SIZE; j++){
-                    if (field[i][j].ship) {
-                        if (Ship.isValidShip(i, j)){
-                            army.addShip(new Ship(i, j));
+                    if (isShipHere(i, j)) {
+                        if (army.alreadySeen(i, j))
+                            continue;
+
+                        Ship curr = new Ship(this, i, j);
+                        if (curr.valid){
+                            army.addShip(curr);
+                            curr.callSelf();
+                        } else {
+                            army.clear();
+                            return false;
                         }
                     }
                 }
             }
         }
         return false; //TODO
+    }
+
+    boolean isShipHere(int x, int y){
+        return y >= 0 && y < Game.FIELD_SIZE && x >= 0 && x < Game.FIELD_SIZE && field[x][y].ship;
+    }
+
+    Cell get(int x, int y){
+        return field[x][y];
     }
 }

@@ -1,22 +1,37 @@
 package battleship;
 
+import java.awt.*;
+import java.util.*;
+import java.util.List;
+
 class Army {
-    public static final int POINTS_COUNTER = 20; // Количество точек, которое обязано быть на поле
-    public static final int SHIPS_COUNTER = 10;
+    public static final int POINTS_AMOUNT = 20; // Количество точек, которое обязано быть на поле
+    public static final int SHIPS_AMOUNT = 10;
 
-    private int pointer;
-    private Ship ships[];
+    private List<Ship> ships = new LinkedList<>();
 
-    Army(){
-        pointer = 0;
-        ships = new Ship[SHIPS_COUNTER];
+    Army(){}
+
+    void addShip(Ship ship){
+        if(ships.size() >= SHIPS_AMOUNT) {
+            System.out.println("Слишком много кораблей");
+            return;
+        }
+        ships.add(ship);
     }
 
-    public void addShip(Ship ship){
-        if(pointer == SHIPS_COUNTER - 1) {
-            System.out.println("Слишком много кораблей");
+    void clear(){
+        ships.clear();
+    }
+
+    boolean alreadySeen(int x, int y){
+        for(Ship ship: ships){
+            for (Point point: ship.coordinates){
+                if (point.x == x && point.y == y){
+                    return true;
+                }
+            }
         }
-        ships[pointer] = ship;
-        pointer++;
+        return false;
     }
 }

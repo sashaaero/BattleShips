@@ -19,6 +19,7 @@ class Cell extends JComponent{
     public boolean wasAttacked;
     private boolean playerField;
     private Color color;
+    public Color background;
 
     Cell(String name, boolean player){
         super();
@@ -28,12 +29,15 @@ class Cell extends JComponent{
         this.ship = false;
         this.wasAttacked = false;
         this.color = player ? Color.blue : Color.red;
+        this.background = Color.white;
         enableInputMethods(true);
         addMouseListener(new CellsMouseAdapter());
     }
 
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
+        g.setColor(background);
+        g.fillRect(0, 0, getWidth(), getHeight());
         g.setColor(color);
         g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
     }

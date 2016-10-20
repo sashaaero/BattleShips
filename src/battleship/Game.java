@@ -41,13 +41,14 @@ public class Game {
 
     private void initGUI(){
         window = new JFrame();
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setLayout(new BorderLayout());
         window.setResizable(false);
         window.pack();
         window.setSize(840, 540);
         window.getContentPane().setBackground(Color.white);
         window.setTitle("Морской Бой - Даниил Евсеев");
+        window.setLocationRelativeTo(null);
 
         infoLabel = new JLabel(PUT_SHIPS);
         infoLabel.setHorizontalAlignment(JLabel.CENTER);
