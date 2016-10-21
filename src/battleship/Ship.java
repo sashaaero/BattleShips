@@ -5,17 +5,17 @@ import java.util.LinkedList;
 import java.util.List;
 
 class Ship{
-    int length;
+    private int length;
     boolean alive;
     List<Point> coordinates = new LinkedList<>();
     List<Point> around = new LinkedList<>();
-
     private static final boolean HORIZONTAL = false;
     private static final boolean VERTICAL = true;
-
     boolean valid = true;
+    private Field field;
 
     Ship(Field field, int x, int y){
+        this.field = field;
         // Проверяем, действительно ли тут есть что-то
         if (!field.isShipHere(x, y)){
             valid = false;
@@ -107,6 +107,7 @@ class Ship{
             for(int i = begin; i < end + 1; i++){
                 coordinates.add(new Point(i, y));
                 repaintCell(field.get(i, y), Color.lightGray);
+                // callSelf();
             }
         }
     }
@@ -119,13 +120,29 @@ class Ship{
         }
     }
 
+    boolean getHit(int x, int y){
+        Point p = new Point(x, y);
+        if (!coordinates.contains(p))
+            return false;
+
+        coordinates.remove(p);
+        if(coordinates.size() == 0){
+            for(Point point: around){
+                field.get(point.x, point.y).wasAttacked = true;
+            }
+        }
+        field.repaintAll();
+        return true;
+    }
+
     private void repaintCell(Cell cell, Color color){
+        if (!Main.DEV) return;
         cell.background = color;
         cell.repaint();
     }
 
-    // DEVMETHOD
     public void callSelf(){
+        if (!Main.DEV) return;
         Point begin = coordinates.get(0), end = coordinates.get(coordinates.size() - 1);
         System.out.printf("Найден корабль длиной %d\n", length);
         String letters[] = {"а", "б", "в", "г", "д", "е", "ж", "з", "и", "к"};

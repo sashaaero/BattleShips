@@ -14,17 +14,24 @@ class Cell extends JComponent{
             TODO DOCUMENTATION
      */
 
+    private int x;
+    private int y;
     private String name;
-    public boolean ship;
-    public boolean wasAttacked;
+    boolean ship;
+    boolean wasAttacked;
     private boolean playerField;
     private Color color;
-    public Color background;
+    Color background;
+    private Field field;
 
-    Cell(String name, boolean player){
+    Cell(Field field, int x, int y, boolean player){
         super();
+        this.x = x;
+        this.y = y;
+        this.field = field;
         this.setToolTipText(name);
-        this.name = name;
+        String letters[] = {"а", "б", "в", "г", "д", "е", "ж", "з", "и", "к"};
+        this.name = letters[x] + Integer.toString(y + 1);
         this.playerField = player;
         this.ship = false;
         this.wasAttacked = false;
@@ -60,6 +67,7 @@ class Cell extends JComponent{
             }
         } else {
             if (wasAttacked) {
+                System.out.printf("(%d; %d) marked as attacked\n", x, y);
                 if (ship) {
                     g.drawLine(5, 5, getWidth() - 5, getHeight() - 5);
                     g.drawLine(getWidth() - 5, 5, 5, getHeight() - 5);
@@ -71,7 +79,7 @@ class Cell extends JComponent{
     }
 
     private void operate(){
-        if (!Game.playerTurn) return;
+        //if (!Game.playerTurn) return;
         switch (Game.state){
             case Game.GAME_NOT_STARTED:
                 if (playerField){ //Значит мы выставляем кораблики
@@ -80,7 +88,9 @@ class Cell extends JComponent{
                 break;
             case Game.GAME_IN_PROCESS:
                 if (!playerField) {
-
+                    this.wasAttacked = true;
+                    boolean res = field.army.getShot(x, y);
+                    Game.ai.shoot();
                 }
                 break;
             case Game.GAME_FINISHED:

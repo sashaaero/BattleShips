@@ -38,4 +38,16 @@ class Army {
         return false;
     }
 
+    boolean getShot(int x, int y){
+        for(Ship ship: ships){
+            if (ship.getHit(x, y)){
+                return true;
+            }
+        }
+        Game.playerTurn = !Game.playerTurn;
+        if(!Game.playerTurn){
+            Game.ai.shoot();
+        }
+        return false;
+    }
 }

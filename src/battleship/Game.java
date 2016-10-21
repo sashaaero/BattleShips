@@ -18,6 +18,7 @@ public class Game {
     // Поля игры
     static int state;
     static boolean playerTurn;
+    public static AI ai;
 
 
     // Поля интернфейса
@@ -32,9 +33,11 @@ public class Game {
     private JLabel infoLabel;
 
     Game(){
-        initGUI();
         state = GAME_NOT_STARTED;
         playerTurn = true;
+        playerField = new Field(true);
+        enemyField = new Field(false);
+        initGUI();
         this.window.setVisible(true);
     }
 
@@ -77,8 +80,6 @@ public class Game {
         lowerPanel.setPreferredSize(new Dimension(window.getWidth(), 90));
         lowerPanel.setBackground(Color.white);
 
-        playerField = new Field(true);
-        enemyField = new Field(false);
         fieldsPanel = new JPanel(new GridBagLayout());
         fieldsPanel.setBackground(Color.white);
         c.insets.top = 1;
@@ -102,7 +103,11 @@ public class Game {
     private void start(){
         if(playerField.fieldIsReady()){
             infoLabel.setText("Ваш выстрел");
-
+            ai = new AI(enemyField, playerField);
+            start.setEnabled(false);
+            newGame.setEnabled(true);
+            surrender.setEnabled(true);
+            state = GAME_IN_PROCESS;
         } else {
             infoLabel.setText("Ваши корабли выставлены неверно");
         }

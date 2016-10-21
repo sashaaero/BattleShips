@@ -27,9 +27,7 @@ class Field extends JPanel{
             label.setHorizontalAlignment(JLabel.CENTER);
             cells.add(label);
             for(int j = 0; j < Game.FIELD_SIZE; j++){
-                String name = letters[i];
-                name += Integer.toString(j + 1);
-                field[i][j] = new Cell(name, player);
+                field[i][j] = new Cell(this, i, j, player);
                 cells.add(field[i][j]);
             }
         }
@@ -65,7 +63,6 @@ class Field extends JPanel{
                         Ship curr = new Ship(this, i, j);
                         if (curr.valid){
                             army.addShip(curr);
-                            curr.callSelf();
                         } else {
                             army.clear();
                             return false;
@@ -86,5 +83,13 @@ class Field extends JPanel{
             return field[x][y];
         else
             return null;
+    }
+
+    public void repaintAll(){
+        for(Cell[] row: field){
+            for(Cell c: row){
+                c.repaint();
+            }
+        }
     }
 }
