@@ -43,8 +43,8 @@ class Cell extends JComponent{
 
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
-        g.setColor(background);
-        g.fillRect(0, 0, getWidth(), getHeight());
+        //g.setColor(background);
+        //g.fillRect(0, 0, getWidth(), getHeight());
         g.setColor(color);
         g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
     }
