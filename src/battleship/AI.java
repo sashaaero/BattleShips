@@ -4,7 +4,7 @@ package battleship;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-class AI {
+class AI implements Runnable{
     private Army army;
     private Field field;
     private Field enemyField;
@@ -14,6 +14,10 @@ class AI {
     private final int DOWN = 2;
     private final int LEFT = 3;
     private int ways[] = {UP, RIGHT, DOWN, LEFT};
+
+    private Thread th = new Thread(this);
+
+
 
     AI(Field field, Field enemyField){
         this.field = field;
@@ -49,6 +53,7 @@ class AI {
                 setShip(currWay, x, y, len);
             }
         }
+        th.start();
     }
 
     private void setShip(int dir, int x, int y, int len){
@@ -155,24 +160,36 @@ class AI {
     }
 
     void shoot(){
-        while (!Game.playerTurn) {
-            Random r = ThreadLocalRandom.current();
-            int x = r.nextInt(Game.FIELD_SIZE);
-            int y = r.nextInt(Game.FIELD_SIZE);
+        Random r = ThreadLocalRandom.current();
+        int x = r.nextInt(Game.FIELD_SIZE);
+        int y = r.nextInt(Game.FIELD_SIZE);
+        try {
+            Thread.sleep(r.nextInt(2000) + 1000); // Бот думает от одной до трех секунд
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        Cell cell = enemyField.get(x, y);
+        while (cell.wasAttacked) {
+            x = r.nextInt(Game.FIELD_SIZE);
+            y = r.nextInt(Game.FIELD_SIZE);
+            cell = enemyField.get(x, y);
+        }
+
+        enemyField.army.getShot(x, y);
+    }
+
+    @Override
+    public void run() {
+        while(Game.state == Game.GAME_IN_PROCESS){
             try {
-                Thread.sleep(r.nextInt(2000) + 1000); // Бот думает от одной до трех секунд
+                th.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
-            Cell cell = enemyField.get(x, y);
-            while (cell.wasAttacked) {
-                x = r.nextInt(Game.FIELD_SIZE);
-                y = r.nextInt(Game.FIELD_SIZE);
-                cell = enemyField.get(x, y);
+            if (!Game.playerTurn) {
+                shoot();
             }
-
-            enemyField.army.getShot(x, y);
         }
     }
 }
