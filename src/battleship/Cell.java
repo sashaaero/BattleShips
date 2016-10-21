@@ -67,7 +67,6 @@ class Cell extends JComponent{
             }
         } else {
             if (wasAttacked) {
-                System.out.printf("(%d; %d) marked as attacked\n", x, y);
                 if (ship) {
                     g.drawLine(5, 5, getWidth() - 5, getHeight() - 5);
                     g.drawLine(getWidth() - 5, 5, 5, getHeight() - 5);

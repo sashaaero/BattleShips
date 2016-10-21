@@ -4,7 +4,7 @@ package battleship;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-class AI/* implements Runnable*/{
+class AI{
     private Army army;
     private Field field;
     private Field enemyField;
@@ -14,10 +14,6 @@ class AI/* implements Runnable*/{
     private final int DOWN = 2;
     private final int LEFT = 3;
     private int ways[] = {UP, RIGHT, DOWN, LEFT};
-
-    //private Thread th = new Thread(this);
-
-
 
     AI(Field field, Field enemyField){
         this.field = field;
@@ -165,11 +161,6 @@ class AI/* implements Runnable*/{
         int y = r.nextInt(Game.FIELD_SIZE);
 
         System.out.printf("Strelyau (%d; %d)\n", x, y);
-        /*try {
-            Thread.sleep(r.nextInt(2000) + 1000); // Бот думает от одной до трех секунд
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
 
         Cell cell = enemyField.get(x, y);
         while (cell.wasAttacked) {
@@ -179,19 +170,6 @@ class AI/* implements Runnable*/{
         }
 
         enemyField.army.getShot(x, y);
+        cell.wasAttacked = true;
     }
-
-
-    /*public void run() {
-        while(Game.state == Game.GAME_IN_PROCESS){
-            try {
-                th.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if (!Game.playerTurn) {
-                shoot();
-            }
-        }
-    }*/
 }
