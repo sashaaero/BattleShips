@@ -39,7 +39,7 @@ class Field extends JPanel{
         this.add(label, BorderLayout.NORTH);
 
         // Game part
-        army = new Army();
+        army = new Army(player);
     }
 
     boolean fieldIsReady(){
@@ -85,7 +85,17 @@ class Field extends JPanel{
             return null;
     }
 
-    public void repaintAll(){
+    void clear(){
+        army.clear();
+        for(Cell[] row: field){
+            for(Cell cell: row){
+                cell.ship = false;
+                cell.wasAttacked = false;
+            }
+        }
+    }
+
+    void repaintAll(){
         for(Cell[] row: field){
             for(Cell c: row){
                 c.repaint();

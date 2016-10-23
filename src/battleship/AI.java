@@ -5,9 +5,10 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 class AI{
-    private Army army;
+    Army army;
     private Field field;
     private Field enemyField;
+    boolean currentlyFound = false;
 
     private final int UP = 0;
     private final int RIGHT = 1;
@@ -156,20 +157,21 @@ class AI{
     }
 
     void shoot(){
-        Random r = ThreadLocalRandom.current();
-        int x = r.nextInt(Game.FIELD_SIZE);
-        int y = r.nextInt(Game.FIELD_SIZE);
+        if (currentlyFound){
 
-        System.out.printf("Strelyau (%d; %d)\n", x, y);
+        } else {
+            Random r = ThreadLocalRandom.current();
+            int x = r.nextInt(Game.FIELD_SIZE);
+            int y = r.nextInt(Game.FIELD_SIZE);
 
-        Cell cell = enemyField.get(x, y);
-        while (cell.wasAttacked) {
-            x = r.nextInt(Game.FIELD_SIZE);
-            y = r.nextInt(Game.FIELD_SIZE);
-            cell = enemyField.get(x, y);
+            Cell cell = enemyField.get(x, y);
+            while (cell.wasAttacked) {
+                x = r.nextInt(Game.FIELD_SIZE);
+                y = r.nextInt(Game.FIELD_SIZE);
+                cell = enemyField.get(x, y);
+            }
+
+            cell.operate();
         }
-
-        enemyField.army.getShot(x, y);
-        cell.wasAttacked = true;
     }
 }

@@ -6,13 +6,16 @@ import java.util.List;
 
 class Ship{
     private int length;
-    boolean alive;
-    List<Point> coordinates = new LinkedList<>();
-    List<Point> around = new LinkedList<>();
+    List<Cell> coordinates = new LinkedList<>();
+    List<Cell> around = new LinkedList<>();
     private static final boolean HORIZONTAL = false;
     private static final boolean VERTICAL = true;
     boolean valid = true;
     private Field field;
+
+    static final int MISS = 0;
+    static final int HIT = 1;
+    static final int KILL = 2;
 
     Ship(Field field, int x, int y){
         this.field = field;
@@ -64,7 +67,7 @@ class Ship{
 
             // Запись самого корабля
             for(int i = begin; i < end + 1; i++){
-                coordinates.add(new Point(x, i));
+                coordinates.add(field.get(x, i));
                 repaintCell(field.get(x, i), Color.lightGray);
             }
         }
@@ -105,7 +108,7 @@ class Ship{
             }
 
             for(int i = begin; i < end + 1; i++){
-                coordinates.add(new Point(i, y));
+                coordinates.add(field.get(i, y));
                 repaintCell(field.get(i, y), Color.lightGray);
                 // callSelf();
             }
@@ -115,24 +118,25 @@ class Ship{
     private void operateEmpty(Field field, int x, int y){
         Cell cell = field.get(x, y);
         if (cell != null){
-            around.add(new Point(x, y));
+            around.add(field.get(x, y));
             repaintCell(field.get(x, y), Color.PINK);
         }
     }
 
-    boolean getHit(int x, int y){
-        Point p = new Point(x, y);
-        if (!coordinates.contains(p))
-            return false;
+    int getHit(int x, int y){
+        if (!coordinates.contains(field.get(x, y)))
+            return MISS;
 
-        coordinates.remove(p);
+        coordinates.remove(field.get(x, y));
         if(coordinates.size() == 0){
-            for(Point point: around){
-                field.get(point.x, point.y).wasAttacked = true;
+            for(Cell cell: around){
+                cell.wasAttacked = true;
             }
+            field.repaintAll();
+            return KILL;
         }
         field.repaintAll();
-        return true;
+        return HIT;
     }
 
     private void repaintCell(Cell cell, Color color){
@@ -143,7 +147,7 @@ class Ship{
 
     public void callSelf(){
         if (!Main.DEV) return;
-        Point begin = coordinates.get(0), end = coordinates.get(coordinates.size() - 1);
+        Cell begin = coordinates.get(0), end = coordinates.get(coordinates.size() - 1);
         System.out.printf("Найден корабль длиной %d\n", length);
         String letters[] = {"а", "б", "в", "г", "д", "е", "ж", "з", "и", "к"};
         System.out.printf("Координаты: (%s%d; %s%d)\n\n", letters[begin.x], begin.y + 1, letters[end.x], end.y + 1);

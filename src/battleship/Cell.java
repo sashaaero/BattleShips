@@ -5,24 +5,15 @@ import java.awt.*;
 import java.awt.event.*;
 
 class Cell extends JComponent{
-    /*
-        Константы
-            UNKNOWN - для отображения нетронутой ячейки (или пустой для игрока)
-            MISS - для отображения ячейки с промахом (или технически недоступные ячейки)
-            FIRED - для отображения ячейки, в которую попали
-            SHIP - для отображения ячейки с кораблем (только для поля игрока)
-            TODO DOCUMENTATION
-     */
-
-    private int x;
-    private int y;
-    private String name;
+    final int x;
+    final int y;
+    String name;
     boolean ship;
     boolean wasAttacked;
-    private boolean playerField;
-    private Color color;
+    boolean playerField;
+    Color color;
     Color background;
-    private Field field;
+    Field field;
 
     Cell(Field field, int x, int y, boolean player){
         super();
@@ -47,7 +38,7 @@ class Cell extends JComponent{
         //g.fillRect(0, 0, getWidth(), getHeight());
         g.setColor(color);
         g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
-    }
+     }
 
     protected void paintBorder(Graphics graphics){
         super.paintBorder(graphics);
@@ -55,43 +46,78 @@ class Cell extends JComponent{
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setColor(color);
 
-        if (playerField){
-            if (ship) {
-                g.fillRect(10, 10, 10, 10);
-                if (wasAttacked) {
-                    g.drawLine(5, 5, getWidth() - 5, getHeight() - 5);
-                    g.drawLine(getWidth() - 5, 5, 5, getHeight() - 5);
-                }
-            } else if (wasAttacked) {
-                g.fillOval(getWidth() / 2 - 2, getHeight() / 2 - 2, 4, 4);
-            }
-        } else {
-            if (wasAttacked) {
+        if (Game.state == Game.GAME_IN_PROCESS || Game.state == Game.GAME_NOT_STARTED) {
+
+            if (playerField) {
                 if (ship) {
-                    g.drawLine(5, 5, getWidth() - 5, getHeight() - 5);
-                    g.drawLine(getWidth() - 5, 5, 5, getHeight() - 5);
-                } else {
-                    g.fillOval(getWidth() / 2 - 2, getHeight() / 2 - 2, 4, 4);
+                    paintShip(g);
+                    if (wasAttacked) {
+                        paintHit(g);
+                    }
+                } else if (wasAttacked) {
+                    paintMiss(g);
+                }
+            } else {
+                if (wasAttacked) {
+                    if (ship) {
+                        paintHit(g);
+                    } else {
+                        paintMiss(g);
+                    }
                 }
             }
+        } else if (Game.state == Game.GAME_FINISHED){
+            if (ship) {
+                paintShip(g);
+                if (wasAttacked) {
+                    paintHit(g);
+                }
+            } else if (wasAttacked){
+                paintMiss(g);
+            }
+
         }
     }
 
-    private void operate(){
-        //if (!Game.playerTurn) return;
+    private void paintShip(Graphics g){
+        g.fillRect(10, 10, 10, 10);
+    }
+
+    private void paintHit(Graphics g){
+        g.drawLine(5, 5, getWidth() - 5, getHeight() - 5);
+        g.drawLine(getWidth() - 5, 5, 5, getHeight() - 5);
+    }
+
+    private void paintMiss(Graphics g){
+        g.fillOval(getWidth() / 2 - 2, getHeight() / 2 - 2, 4, 4);
+    }
+
+    void operate(){
         switch (Game.state){
             case Game.GAME_NOT_STARTED:
                 if (playerField){ //Значит мы выставляем кораблики
                     this.ship = !this.ship;
                 }
                 break;
+
             case Game.GAME_IN_PROCESS:
-                if (!playerField) {
-                    this.wasAttacked = true;
-                    boolean res = field.army.getShot(x, y);
+                if (Game.playerTurn && playerField || wasAttacked)
+                    return;
+
+                wasAttacked = true;
+                if (ship) {
+                    field.army.getShot(x, y);
+                    if (!Game.playerTurn) {
+                        Game.ai.shoot();
+                    }
+                } else
+                    Game.playerTurn = !Game.playerTurn;
+
+                if (!Game.playerTurn)
                     Game.ai.shoot();
-                }
+
                 break;
+
             case Game.GAME_FINISHED:
                 break;
         }
@@ -112,7 +138,8 @@ class Cell extends JComponent{
 
     private class CellsMouseAdapter extends MouseAdapter {
         public void mouseReleased(MouseEvent e) {
-            operate();
+            if (Game.playerTurn)
+                operate();
         }
     }
 }

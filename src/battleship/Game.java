@@ -30,7 +30,7 @@ public class Game {
     private JButton newGame;
     private JButton surrender;
     private JButton start;
-    private JLabel infoLabel;
+    private static JLabel infoLabel;
 
     Game(){
         state = GAME_NOT_STARTED;
@@ -98,6 +98,16 @@ public class Game {
     }
 
     private void newGame(){
+        enemyField.clear();
+        playerField.clear();
+        enemyField.repaintAll();
+        playerField.repaintAll();
+        state = GAME_NOT_STARTED;
+        infoLabel.setText("Расставьте корабли и нажмите Начать игру");
+
+        newGame.setEnabled(false);
+        surrender.setEnabled(false);
+        start.setEnabled(true);
     }
 
     private void start(){
@@ -114,10 +124,17 @@ public class Game {
     }
 
     private void surrender(){
-        //TODO
+        over(false);
     }
 
-    //private boolean isFieldValid(){
-
-    //}
+    static void over(boolean playerWon){
+        if (playerWon) {
+            infoLabel.setText("Победил игрок!");
+        } else {
+            infoLabel.setText("Победил компьютер");
+        }
+        Game.state = GAME_FINISHED;
+        enemyField.repaintAll();
+        playerField.repaintAll();
+    }
 }
