@@ -43,15 +43,21 @@ class Army {
         return false;
     }
 
-    void getShot(int x, int y){
+    int getShot(int x, int y){
         Iterator<Ship> it = ships.iterator();
         while (it.hasNext()){
             Ship ship = it.next();
-            if (ship.getHit(x, y) == Ship.KILL) {
-                it.remove();
-                if (ships.isEmpty())
-                    Game.over(!playerArmy);
+            int res = ship.getHit(x, y);
+            if (res != Ship.MISS){
+                if (res == Ship.KILL){
+                    it.remove();
+                    if (ships.isEmpty()){
+                        Game.over(!playerArmy);
+                    }
+                }
+                return res;
             }
         }
+        return Ship.MISS;
     }
 }

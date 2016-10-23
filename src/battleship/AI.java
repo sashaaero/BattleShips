@@ -1,6 +1,8 @@
 package battleship;
 
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -9,6 +11,7 @@ class AI{
     private Field field;
     private Field enemyField;
     boolean currentlyFound = false;
+    int wayToShoot = -1;
 
     private final int UP = 0;
     private final int RIGHT = 1;
@@ -156,8 +159,10 @@ class AI{
         }
     }
 
-    void shoot(){
+    void shoot(){;
         if (currentlyFound){
+
+
 
         } else {
             Random r = ThreadLocalRandom.current();
@@ -171,6 +176,7 @@ class AI{
                 cell = enemyField.get(x, y);
             }
 
+            currentlyFound = cell.ship;
             cell.operate();
         }
     }

@@ -110,7 +110,7 @@ class Ship{
             for(int i = begin; i < end + 1; i++){
                 coordinates.add(field.get(i, y));
                 repaintCell(field.get(i, y), Color.lightGray);
-                // callSelf();
+                callSelf();
             }
         }
     }
