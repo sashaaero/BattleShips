@@ -2,7 +2,6 @@ package battleship;
 
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 class Army {
     static final int POINTS_AMOUNT = 20; // Количество точек, которое обязано быть на поле

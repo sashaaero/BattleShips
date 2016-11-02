@@ -31,9 +31,9 @@ class AI{
         int x, y;
         for(int len = 4; len > 0; len--){
             for(int i = 0, tries = 0; i < 5 - len; i++, tries++) {
-                if (tries == 1000){
+                if (tries == 1000)
                     System.exit(1);
-                }
+
                 // Выбираем случайную точку
                 x = random.nextInt(Game.FIELD_SIZE);
                 y = random.nextInt(Game.FIELD_SIZE);

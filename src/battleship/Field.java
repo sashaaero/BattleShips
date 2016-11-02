@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 class Field extends JPanel{
-    private Cell[][] field = new Cell[Game.FIELD_SIZE][Game.FIELD_SIZE];
+    Cell[][] field = new Cell[Game.FIELD_SIZE][Game.FIELD_SIZE];
     Army army;
 
     Field(boolean player){
@@ -45,33 +45,32 @@ class Field extends JPanel{
     boolean fieldIsReady(){
         // Быстрая проверка
         int counter = 0;
-        for(int i = 0; i < Game.FIELD_SIZE; i++){
-            for(int j = 0; j < Game.FIELD_SIZE; j++){
+        for(int i = 0; i < Game.FIELD_SIZE; i++)
+            for(int j = 0; j < Game.FIELD_SIZE; j++)
                 counter += field[i][j].ship ? 1 : 0;
-            }
-        }
-        if (counter != Army.POINTS_AMOUNT) {
+
+        if (counter != Army.POINTS_AMOUNT)
             return false; //недостаточно клеток (или перебор)
 
-        } else { //Начинаем проверку
-            for(int i = 0; i < Game.FIELD_SIZE; i++){
-                for(int j = 0; j < Game.FIELD_SIZE; j++){
-                    if (isShipHere(i, j)) {
-                        if (army.engaged(i, j))
-                            continue;
 
-                        Ship curr = new Ship(this, i, j);
-                        if (curr.valid){
-                            army.addShip(curr);
-                        } else {
-                            army.clear();
-                            return false;
-                        }
+        for(int i = 0; i < Game.FIELD_SIZE; i++){ //Начинаем проверку
+            for(int j = 0; j < Game.FIELD_SIZE; j++){
+                if (isShipHere(i, j)) {
+                    if (army.engaged(i, j))
+                        continue;
+
+                    Ship curr = new Ship(this, i, j);
+                    if (curr.valid)
+                        army.addShip(curr);
+                    else {
+                        army.clear();
+                        return false;
                     }
                 }
             }
         }
-        return true; //TODO
+
+        return true;
     }
 
     boolean isShipHere(int x, int y){

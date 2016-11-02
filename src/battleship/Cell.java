@@ -20,9 +20,9 @@ class Cell extends JComponent{
         this.x = x;
         this.y = y;
         this.field = field;
-        this.setToolTipText(name);
         String letters[] = {"а", "б", "в", "г", "д", "е", "ж", "з", "и", "к"};
         this.name = letters[x] + Integer.toString(y + 1);
+        this.setToolTipText(name);
         this.playerField = player;
         this.ship = false;
         this.wasAttacked = false;
@@ -34,8 +34,8 @@ class Cell extends JComponent{
 
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
-        //g.setColor(background);
-        //g.fillRect(0, 0, getWidth(), getHeight());
+        g.setColor(background);
+        g.fillRect(0, 0, getWidth(), getHeight());
         g.setColor(color);
         g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
      }
@@ -95,9 +95,8 @@ class Cell extends JComponent{
     void operate(){
         switch (Game.state){
             case Game.GAME_NOT_STARTED:
-                if (playerField){ //Значит мы выставляем кораблики
+                if (playerField) //Значит мы выставляем кораблики
                     this.ship = !this.ship;
-                }
                 break;
 
             case Game.GAME_IN_PROCESS:
@@ -107,9 +106,8 @@ class Cell extends JComponent{
                 wasAttacked = true;
                 if (ship) {
                     field.army.getShot(x, y);
-                    if (!Game.playerTurn) {
+                    if (!Game.playerTurn)
                         Game.ai.shoot();
-                    }
                 } else
                     Game.playerTurn = !Game.playerTurn;
 
