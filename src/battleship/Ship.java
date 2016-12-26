@@ -145,7 +145,7 @@ class Ship{
         cell.repaint();
     }
 
-    public void callSelf(){
+    void callSelf(){
         if (!Main.DEV) return;
         Cell begin = coordinates.get(0), end = coordinates.get(coordinates.size() - 1);
         System.out.printf("Найден корабль длиной %d\n", length);

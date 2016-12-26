@@ -91,10 +91,11 @@ class AI{
 
     private int findDir(int x, int y, int len){
         shuffle(ways);
-        for(int j = 0; j < ways.length; j++){
+        //for(int j = 0; j < ways.length; j++){
+        for (int j : ways) {
             // В цикле идем по ПЕРЕМЕШАННЫМ направлениям и проверяем, можно ли куда-нибудь засунуть корабль
             int begin;
-            switch (ways[j]){
+            switch (j){
                 case UP:
                     begin = x;
                     if (begin - len < 0)
@@ -159,18 +160,16 @@ class AI{
         }
     }
 
-    void shoot(){;
+    void shoot(){
         if (currentlyFound){
-
-
-
+            ;
         } else {
             Random r = ThreadLocalRandom.current();
             int x = r.nextInt(Game.FIELD_SIZE);
             int y = r.nextInt(Game.FIELD_SIZE);
 
             Cell cell = enemyField.get(x, y);
-            while (cell.wasAttacked) {
+            while (cell.wasAttacked) { // Ищем ту, куда не стреляли, и которая не зачеркнута
                 x = r.nextInt(Game.FIELD_SIZE);
                 y = r.nextInt(Game.FIELD_SIZE);
                 cell = enemyField.get(x, y);
