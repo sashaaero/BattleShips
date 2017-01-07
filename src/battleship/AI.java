@@ -1,13 +1,13 @@
 package battleship;
 
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-class AI{
+class AI implements Runnable{
     Army army;
+    Thread thread;
     private Field field;
     private Field enemyField;
     boolean currentlyFound = false;
@@ -24,6 +24,8 @@ class AI{
         this.enemyField = enemyField;
         army = field.army;
         setup();
+        thread = new Thread(this);
+        thread.setName("AI's thread");
     }
 
     void setup(){
@@ -53,7 +55,6 @@ class AI{
                 setShip(currWay, x, y, len);
             }
         }
-       // th.start();
     }
 
     private void setShip(int dir, int x, int y, int len){
@@ -161,8 +162,9 @@ class AI{
     }
 
     void shoot(){
+        System.out.println("Я тут пострелять хочу");
         if (currentlyFound){
-            ;
+            System.out.println("Я тут что делаю?");
         } else {
             Random r = ThreadLocalRandom.current();
             int x = r.nextInt(Game.FIELD_SIZE);
@@ -174,9 +176,26 @@ class AI{
                 y = r.nextInt(Game.FIELD_SIZE);
                 cell = enemyField.get(x, y);
             }
-
+            System.out.println("Я подумал и стреляю в " + cell.name);
             currentlyFound = cell.ship;
-            cell.operate();
+
+        }
+    }
+
+    @Override
+    public void run() {
+        while(Game.state != Game.OVER){
+            System.out.print("currlentyFound = ");
+            System.out.println(currentlyFound);
+            if(!Game.playerTurn){ // Ходим мы
+                System.out.println(Thread.currentThread().getName() + " хочет ходить");
+                try {
+                    thread.sleep((int) (Math.random() * 20000  + 100));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                shoot();
+            }
         }
     }
 }

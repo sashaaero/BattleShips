@@ -8,11 +8,10 @@ class Army {
     static final int SHIPS_AMOUNT = 10;
 
     private List<Ship> ships = new LinkedList<>();
+    private Field field;
 
-    private boolean playerArmy;
-
-    Army(boolean playerArmy){
-        this.playerArmy = playerArmy;
+    Army(Field field){
+        this.field = field;
     }
 
     void addShip(Ship ship){
@@ -25,7 +24,6 @@ class Army {
 
     void clear(){
         ships.clear();
-
     }
 
     boolean engaged(int x, int y){
@@ -43,20 +41,16 @@ class Army {
     }
 
     int getShot(int x, int y){
-        Iterator<Ship> it = ships.iterator();
-        while (it.hasNext()){
-            Ship ship = it.next();
-            int res = ship.getHit(x, y);
-            if (res != Ship.MISS){
-                if (res == Ship.KILL){
-                    it.remove();
-                    if (ships.isEmpty()){
-                        Game.over(!playerArmy);
-                    }
+        if (field.isShipHere(x, y)){
+            for (Ship ship: ships){
+                int res = ship.getHit(x, y);
+                if (res != Ship.MISS){
+                    return res;
                 }
-                return res;
             }
+            return Ship.MISS;
+        } else {
+            return Ship.MISS;
         }
-        return Ship.MISS;
     }
 }

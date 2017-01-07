@@ -46,7 +46,7 @@ class Cell extends JComponent{
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setColor(color);
 
-        if (Game.state == Game.GAME_IN_PROCESS || Game.state == Game.GAME_NOT_STARTED) {
+        if (Game.state == Game.IN_PROCESS || Game.state == Game.NOT_STARTED) {
 
             if (playerField) {
                 if (ship) {
@@ -66,7 +66,7 @@ class Cell extends JComponent{
                     }
                 }
             }
-        } else if (Game.state == Game.GAME_FINISHED){
+        } else if (Game.state == Game.OVER){
             if (ship) {
                 paintShip(g);
                 if (wasAttacked) {
@@ -75,7 +75,6 @@ class Cell extends JComponent{
             } else if (wasAttacked){
                 paintMiss(g);
             }
-
         }
     }
 
@@ -92,14 +91,14 @@ class Cell extends JComponent{
         g.fillOval(getWidth() / 2 - 2, getHeight() / 2 - 2, 4, 4);
     }
 
-    void operate(){
-        switch (Game.state){
-            case Game.GAME_NOT_STARTED:
+    void clicked(){
+        /*switch (Game.state){
+            case Game.NOT_STARTED:
                 if (playerField) //Значит мы выставляем кораблики
                     this.ship = !this.ship;
                 break;
 
-            case Game.GAME_IN_PROCESS:
+            case Game.IN_PROCESS:
                 if (Game.playerTurn && playerField || wasAttacked)
                     return;
 
@@ -111,13 +110,36 @@ class Cell extends JComponent{
                 } else
                     Game.playerTurn = !Game.playerTurn;
 
-                if (!Game.playerTurn)
-                    Game.ai.shoot();
-
                 break;
 
-            case Game.GAME_FINISHED:
+            case Game.OVER:
                 break;
+        }
+        this.repaint();*/
+        //System.out.println("Сейчас ход " + (Game.playerTurn ? "игрока" : "бота"));
+        switch (Game.state){
+            case Game.NOT_STARTED:{
+                if (playerField)
+                    ship = !ship;
+                break;
+            }
+            case Game.IN_PROCESS: {
+                if (Game.playerTurn && !playerField){
+                    if (wasAttacked) return;
+                    wasAttacked = true;
+                    int res = field.army.getShot(x, y);
+                    if(res == Ship.MISS){
+                        Game.playerTurn = false;
+                        System.out.println("Теперь ходит бот!");
+                    }
+                    //Game.playerTurn = (res != Ship.MISS); // Если не промахнулись, то ход игрока. Иначе бота.
+                }
+                break;
+            }
+            case Game.OVER: {
+                // Нечего делать
+                break;
+            }
         }
         this.repaint();
     }
@@ -136,8 +158,8 @@ class Cell extends JComponent{
 
     private class CellsMouseAdapter extends MouseAdapter {
         public void mouseReleased(MouseEvent e) {
-            if (Game.playerTurn)
-                operate();
+            //if (Game.playerTurn)
+                clicked();
         }
     }
 }

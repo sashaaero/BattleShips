@@ -39,7 +39,7 @@ class Field extends JPanel{
         this.add(label, BorderLayout.NORTH);
 
         // Game part
-        army = new Army(player);
+        army = new Army(this);
     }
 
     boolean fieldIsReady(){

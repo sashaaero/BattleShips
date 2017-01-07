@@ -11,15 +11,14 @@ public class Game {
     private String WRONG_SHIPS = "Ваши корабли выставлены неверно";
     private String YOUR_TURN = "Ваш ход";
     private String ENEMY_TURN = "Ходит противник";
-    static final int GAME_NOT_STARTED = 0;
-    static final int GAME_IN_PROCESS = 1;
-    static final int GAME_FINISHED = 2;
+    static final int NOT_STARTED = 0;
+    static final int IN_PROCESS = 1;
+    static final int OVER = 2;
 
     // Поля игры
     static int state;
-    static boolean playerTurn;
+    volatile static boolean playerTurn;
     public static AI ai;
-
 
     // Поля интернфейса
     private JFrame window;
@@ -33,7 +32,7 @@ public class Game {
     private static JLabel infoLabel;
 
     Game(){
-        state = GAME_NOT_STARTED;
+        state = NOT_STARTED;
         playerTurn = true;
         playerField = new Field(true);
         enemyField = new Field(false);
@@ -102,7 +101,7 @@ public class Game {
         playerField.clear();
         enemyField.repaintAll();
         playerField.repaintAll();
-        state = GAME_NOT_STARTED;
+        state = NOT_STARTED;
         infoLabel.setText("Расставьте корабли и нажмите Начать игру");
 
         newGame.setEnabled(false);
@@ -114,10 +113,11 @@ public class Game {
         if(playerField.fieldIsReady()){
             infoLabel.setText("Ваш выстрел");
             ai = new AI(enemyField, playerField);
+            ai.thread.start();
             start.setEnabled(false);
             newGame.setEnabled(true);
             surrender.setEnabled(true);
-            state = GAME_IN_PROCESS;
+            state = IN_PROCESS;
         } else {
             infoLabel.setText("Ваши корабли выставлены неверно");
         }
@@ -133,7 +133,7 @@ public class Game {
         } else {
             infoLabel.setText("Победил компьютер");
         }
-        Game.state = GAME_FINISHED;
+        Game.state = OVER;
         enemyField.repaintAll();
         playerField.repaintAll();
     }
