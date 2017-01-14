@@ -46,7 +46,7 @@ class Cell extends JComponent{
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setColor(color);
 
-        if (Game.state == Game.IN_PROCESS || Game.state == Game.NOT_STARTED) {
+        if (Game.getInstance().state == Game.IN_PROCESS || Game.getInstance().state == Game.NOT_STARTED) {
 
             if (playerField) {
                 if (ship) {
@@ -66,7 +66,7 @@ class Cell extends JComponent{
                     }
                 }
             }
-        } else if (Game.state == Game.OVER){
+        } else if (Game.getInstance().state == Game.OVER){
             if (ship) {
                 paintShip(g);
                 if (wasAttacked) {
@@ -76,6 +76,11 @@ class Cell extends JComponent{
                 paintMiss(g);
             }
         }
+    }
+
+    public void attacked(){
+        this.wasAttacked = true;
+        this.repaint();
     }
 
     private void paintShip(Graphics g){
@@ -92,47 +97,21 @@ class Cell extends JComponent{
     }
 
     void clicked(){
-        /*switch (Game.state){
-            case Game.NOT_STARTED:
-                if (playerField) //Значит мы выставляем кораблики
-                    this.ship = !this.ship;
-                break;
-
-            case Game.IN_PROCESS:
-                if (Game.playerTurn && playerField || wasAttacked)
-                    return;
-
-                wasAttacked = true;
-                if (ship) {
-                    field.army.getShot(x, y);
-                    if (!Game.playerTurn)
-                        Game.ai.shoot();
-                } else
-                    Game.playerTurn = !Game.playerTurn;
-
-                break;
-
-            case Game.OVER:
-                break;
-        }
-        this.repaint();*/
-        //System.out.println("Сейчас ход " + (Game.playerTurn ? "игрока" : "бота"));
-        switch (Game.state){
+        switch (Game.getInstance().state){
             case Game.NOT_STARTED:{
                 if (playerField)
                     ship = !ship;
                 break;
             }
             case Game.IN_PROCESS: {
-                if (Game.playerTurn && !playerField){
+                if (Game.getInstance().playerTurn && !playerField){
                     if (wasAttacked) return;
-                    wasAttacked = true;
-                    int res = field.army.getShot(x, y);
+                    attacked();
+                    int res = Game.getInstance().enemyField.army.getShot(x, y);
                     if(res == Ship.MISS){
-                        Game.playerTurn = false;
-                        System.out.println("Теперь ходит бот!");
+                        Game.getInstance().playerTurn = false;
+                        Game.getInstance().infoLabel.setText("Ходит бот!");
                     }
-                    //Game.playerTurn = (res != Ship.MISS); // Если не промахнулись, то ход игрока. Иначе бота.
                 }
                 break;
             }

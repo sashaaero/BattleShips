@@ -1,6 +1,8 @@
 package battleship;
 
 
+import java.awt.*;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -10,8 +12,6 @@ class AI implements Runnable{
     Thread thread;
     private Field field;
     private Field enemyField;
-    boolean currentlyFound = false;
-    int wayToShoot = -1;
 
     private final int UP = 0;
     private final int RIGHT = 1;
@@ -25,7 +25,6 @@ class AI implements Runnable{
         army = field.army;
         setup();
         thread = new Thread(this);
-        thread.setName("AI's thread");
     }
 
     void setup(){
@@ -161,36 +160,36 @@ class AI implements Runnable{
         }
     }
 
-    void shoot(){
-        System.out.println("Я тут пострелять хочу");
-        if (currentlyFound){
-            System.out.println("Я тут что делаю?");
-        } else {
-            Random r = ThreadLocalRandom.current();
-            int x = r.nextInt(Game.FIELD_SIZE);
-            int y = r.nextInt(Game.FIELD_SIZE);
+    private void shoot(){
+        try {
+            Thread.sleep((int) (Math.random() * 500  + 500));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-            Cell cell = enemyField.get(x, y);
-            while (cell.wasAttacked) { // Ищем ту, куда не стреляли, и которая не зачеркнута
-                x = r.nextInt(Game.FIELD_SIZE);
-                y = r.nextInt(Game.FIELD_SIZE);
-                cell = enemyField.get(x, y);
-            }
-            System.out.println("Я подумал и стреляю в " + cell.name);
-            currentlyFound = cell.ship;
+        Random r = ThreadLocalRandom.current();
 
+        int x = r.nextInt(Game.FIELD_SIZE);
+        int y = r.nextInt(Game.FIELD_SIZE);
+
+        while (field.get(x, y).wasAttacked){
+            x = r.nextInt(Game.FIELD_SIZE);
+            y = r.nextInt(Game.FIELD_SIZE);
+        }
+
+        int code = enemyField.army.getShot(x, y);
+        if (code == Ship.MISS){
+            Game.getInstance().playerTurn = true;
+            Game.getInstance().infoLabel.setText("Ходит игрок!");
         }
     }
 
     @Override
     public void run() {
-        while(Game.state != Game.OVER){
-            System.out.print("currlentyFound = ");
-            System.out.println(currentlyFound);
-            if(!Game.playerTurn){ // Ходим мы
-                System.out.println(Thread.currentThread().getName() + " хочет ходить");
+        while(Game.getInstance().state != Game.OVER){
+            if(!Game.getInstance().playerTurn){ // Ходим мы
                 try {
-                    thread.sleep((int) (Math.random() * 20000  + 100));
+                    Thread.sleep((int) (Math.random() * 500  + 1000));
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

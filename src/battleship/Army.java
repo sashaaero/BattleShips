@@ -44,12 +44,19 @@ class Army {
         if (field.isShipHere(x, y)){
             for (Ship ship: ships){
                 int res = ship.getHit(x, y);
-                if (res != Ship.MISS){
+                if (res == Ship.KILL){
+                    ships.remove(ship);
+                    if (ships.size() == 0){
+                        Game.getInstance().over(Game.getInstance().playerTurn);
+                    }
+                    return res;
+                } else if (res == Ship.HIT){
                     return res;
                 }
             }
             return Ship.MISS;
         } else {
+            field.get(x, y).attacked();
             return Ship.MISS;
         }
     }

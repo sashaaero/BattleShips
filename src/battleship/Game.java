@@ -16,28 +16,37 @@ public class Game {
     static final int OVER = 2;
 
     // Поля игры
-    static int state;
-    volatile static boolean playerTurn;
-    public static AI ai;
+    volatile int state;
+    volatile boolean playerTurn;
+    public AI ai;
 
     // Поля интернфейса
     private JFrame window;
-    public static Field playerField;
-    public static Field enemyField;
+    public Field playerField;
+    public Field enemyField;
     private JPanel fieldsPanel;
     private JPanel lowerPanel;
     private JButton newGame;
     private JButton surrender;
     private JButton start;
-    private static JLabel infoLabel;
+    JLabel infoLabel;
 
-    Game(){
+    private static Game gameInstance = null;
+
+    private Game(){
         state = NOT_STARTED;
         playerTurn = true;
         playerField = new Field(true);
         enemyField = new Field(false);
         initGUI();
         this.window.setVisible(true);
+    }
+
+    public static Game getInstance(){
+        if (gameInstance == null){
+            gameInstance = new Game();
+        }
+        return gameInstance;
     }
 
 
@@ -127,13 +136,13 @@ public class Game {
         over(false);
     }
 
-    static void over(boolean playerWon){
+    void over(boolean playerWon){
         if (playerWon) {
             infoLabel.setText("Победил игрок!");
         } else {
             infoLabel.setText("Победил компьютер");
         }
-        Game.state = OVER;
+        state = OVER;
         enemyField.repaintAll();
         playerField.repaintAll();
     }

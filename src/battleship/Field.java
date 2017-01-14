@@ -52,7 +52,6 @@ class Field extends JPanel{
         if (counter != Army.POINTS_AMOUNT)
             return false; //недостаточно клеток (или перебор)
 
-
         for(int i = 0; i < Game.FIELD_SIZE; i++){ //Начинаем проверку
             for(int j = 0; j < Game.FIELD_SIZE; j++){
                 if (isShipHere(i, j)) {

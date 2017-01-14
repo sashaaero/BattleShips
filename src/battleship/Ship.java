@@ -127,7 +127,9 @@ class Ship{
         if (!coordinates.contains(field.get(x, y)))
             return MISS;
 
-        coordinates.remove(field.get(x, y));
+        Cell cell_  = field.get(x, y);
+        cell_.wasAttacked = true;
+        coordinates.remove(cell_);
         if(coordinates.size() == 0){
             for(Cell cell: around){
                 cell.wasAttacked = true;
